@@ -1,0 +1,34 @@
+# Node
+node_modules/
+dist/
+build/
+.vite/
+.cache/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Variables de entorno
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDEs
+.vscode/
+.idea/
+
+# Typescript
+*.tsbuildinfo
+
+# Coverage reports (si usas testing)
+coverage/
+
+# Otros
+*.local
+*.log

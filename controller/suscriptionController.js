@@ -12,9 +12,9 @@ export async function verifySubscription(req, res) {
             return res.status(404).json({ msg: 'El cliente no existe' })
         }
 
-        const {activeSubscription} = cliente;
+        const { activeSubscription } = cliente;
 
-        return res.status(200).json({ msg: 'Cliente encontrado', activeSubscription})
+        return res.status(200).json({ msg: 'Cliente encontrado', activeSubscription })
 
     } catch (error) {
         console.log(error)
@@ -66,4 +66,37 @@ export async function createSubscription(req, res) {
         return res.status(500).json({ error: 'Error al activar la suscripción' })
     }
 
+}
+
+export async function cleanExpiredSubscriptions(req, res) {
+    const {role} = req.user;
+    if(role.toString() != 'admin') {
+        return res.status(403).json({msg: 'No tienes permiso para acceder a este recurso' })
+    }
+    
+    try {
+        const today = new Date();
+        const clientes = await Cliente.updateMany(
+            { subscriptionEndDate: { $lt: today } },
+            {
+                $set: {
+                    activeSubscription: false,
+                    subscription: null,
+                    subscriptionStartDate: null,
+                    subscriptionEndDate: null
+                }
+            }
+        );
+
+        if (clientes.modifiedCount === 0) {
+            return res.status(200).json({ msg: 'No hay suscripciones vencidas por limpiar' });
+        }
+
+        return res.status(200).json({
+            msg: `Se cancelaron ${clientes.modifiedCount} suscripciones vencidas`
+        });
+
+    } catch (error) {
+        return res.status(500).json({ msg: 'Error al cancelar suscripciones vencidas' })
+    }
 }

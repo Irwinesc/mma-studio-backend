@@ -9,7 +9,8 @@ export function validarToken(req, res, next) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET); // Decodificar el token
         req.user = {
             id: decoded.id, online: decoded.online,
-            activeSubscription: decoded.activeSubscription
+            activeSubscription: decoded.activeSubscription,
+            role: decoded.role
         };
         next();
     } catch (error) {
